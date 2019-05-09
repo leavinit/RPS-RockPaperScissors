@@ -32,29 +32,29 @@ var database = firebase.database();
 
 //initialize database with intial values
 console.log("updating database initial values");
-updateDatabase(); 
+// updateDatabase(); 
 
 //testing
 // database.ref().remove(); //Clears database (if need be)
 
-function updateDatabase(){
-    //Update the database
-    database.ref("/gameData").push({
-        player1 : player1,
-        player2 : player2,
-        p1pick :  p2pick,
-        p2pick :  p2pick,
-        p1wins  : p1wins, 
-        p1loses : p1losses,
-        p2wins  : p2wins,
-        p2losses : p2losses,
-        p1msg   :  p1msg,
-        p2msg   : p2msg,
-        playersTotal : playersTotal,
-        messages : messages,
-        timeAdded : firebase.database.ServerValue.TIMESTAMP
-    });
-}
+// function updateDatabase(){
+//     //Update the database
+//     database.ref("/gameData").push({
+//         player1 : player1,
+//         player2 : player2,
+//         p1pick :  p2pick,
+//         p2pick :  p2pick,
+//         p1wins  : p1wins, 
+//         p1loses : p1losses,
+//         p2wins  : p2wins,
+//         p2losses : p2losses,
+//         p1msg   :  p1msg,
+//         p2msg   : p2msg,
+//         playersTotal : playersTotal,
+//         messages : messages,
+//         timeAdded : firebase.database.ServerValue.TIMESTAMP
+//     });
+// }
 
 //Handle the modal "Save" button to save the player's name
 $("#nameBtn").click(function(event){
@@ -67,32 +67,46 @@ $("#nameBtn").click(function(event){
 
         playersTotal++;
         console.log(playersTotal + "= players total");
-        updateDatabase();
+        // database.ref("/gameData").set({
+        //     player1: player1,
+        //   });
+        // updateDatabase();
     }
     else if(!player2){
         player2 = entry;
-
+        
         playersTotal++;
         console.log(playersTotal +"= players total");
-        updateDatabase();
+        $("#player2Div").text(player2);
+        // updateDatabase();
         //FUNCTION CALL TO START GAME LIKELY GOES HERE
     }
     else {
-        $('#nameModal').modal('hide')
+        // $('#nameModal').modal('hide')
         console.log ("player queue full, watch game instead(?)");
     }
+    database.ref("/gameData").set({
+        player1: player1,
+        player2: player2
+      });
      //testing
     console.log('p1 set as:' +player1);
     console.log('p2 set as:' +player2);
-
+    if (player1 && player2){
+        console.log("start game? maybe");
+        $("#player2Div").text(player2);
+        $("#player1Div").text(player1);
+    }
 });
+
+
 
 
 //Update the game state from the database
 
-database.ref("/gameData").on("child_added", function(snapshot) {
+database.ref("/gameData").on("value", function(snapshot)  {
     // storing the snapshot.val() in a variable for convenience
-    var sv = snapshot.val();
+     var sv = snapshot.val();
 
     // Check to see db works
     // console.log(sv.player1);
@@ -101,18 +115,20 @@ database.ref("/gameData").on("child_added", function(snapshot) {
     // console.log(sv.p2pick);
     
     //populate the player names (if they are connected)
-    if(sv.player1){
+    if(snapshot.child("player1").exists()){
         player1 = sv.player1;
-        $("#player1Div").text(sv.player1);
+        $("#player1Div").text(player1);
+
         console.log("database p1 detected");
     }
     else{
         $("#player1Div").text("Waiting for player.");
         console.log("database p1 NOT detected");
         $('#nameModal').modal();
+        console.log('modal1');
     }
 
-    if (sv.player2){
+    if (snapshot.child("player1").exists() && (!snapshot.child("player2"))){
         player2 = sv.player2;
         $("#player2Div").text(sv.player2);
         console.log("database p2 detected");
@@ -121,9 +137,13 @@ database.ref("/gameData").on("child_added", function(snapshot) {
     else{
         $("#player2Div").text("Waiting for player.");
         console.log("database p2 NOT detected");
-        $('#myModal').modal();
+        $('#nameModal').modal();
+        console.log('modal2');
+        
     }
 
+    console.log("local players 1:" + player1 + "2: "+ player2);
+    // console.log("db players: " +sv.player1 + "2: " +sv.player2 );
     // if(sv.messages)
     // $("#chatDiv").append("<div class='row'>  "+sv.player1+" says: " + sv.p1msg +"</div>");
    
