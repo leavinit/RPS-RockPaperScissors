@@ -9,6 +9,9 @@
       <!-- Bootstrap CDN-->
     <link rel ="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   
+    <!--custom css-->
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- Firebase Reference -->
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
@@ -18,22 +21,24 @@
 </head>
 <body>
     
-<div class="container">
-    <div class="jumbotron">
-        <h1 class="text-center">RPS 2K19</h1>
-        <h3 class="text-center">"The Fiercest Duel"</h3>
+<div class="container-fluid">
+    <div class="jumbotron rounded">
+        <h1 class="text-center display-4">RPS 2K19</h1>
+        <h3 class="text-center lead">"The Fiercest Duel"</h3>
       </div>
     <div class="row">
-        <div class="col-lg-12" id="rpsDiv">
-            <img src="assets/images/rock.jpg" alt="rock" data-id="rock">
-            <img src="assets/images/paper.png" alt="paper" data-id="paper">
-            <img src="assets/images/scissors.png" alt="scissors" data-id="scissors">
-        </div>
-    </div>
-    <div class="row" id="infoDiv">
         <div class="col-sm-2"></div>
-        <div class="col-sm-4"id="player1Div"></div>
-        <div class="col-sm-4" id="player2Div"></div>
+        <div class="col-sm-8 d-flex justify-content-between align-items-center" id="rpsDiv">
+            <img id ="rockPic" src="assets/images/rock.jpg" alt="rock" data-id="rock">
+            <img id="paperPic" src="assets/images/paper.png" alt="paper" data-id="paper">
+            <img id="scissorsPic" src="assets/images/scissors.png" alt="scissors" data-id="scissors">
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+    <div class="row" id="infoDiv" class="d-flex justify-content-between">
+        <div class="col-sm-2" id="gameMessageDiv"></div>
+        <div class="col-sm-4 rounded"id="player1Div"></div>
+        <div class="col-sm-4 rounded" id="player2Div"></div>
         <div class="col-sm-2"></div>
     </div>
     <div class="row">
@@ -47,9 +52,11 @@
     
 </div>
 
-<!-- test modal (code copied from bootstrap modal page) -->
+
+
+<!-- opening modal to get player names (code copied from bootstrap modal page) -->
 <div id="nameModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Welcome to RPS2K19! <span id="playersModal"></span></h5>
@@ -61,8 +68,6 @@
                 <form id="nameForm">
                     Name:   <input type="text" id="nameBox" name="playerName">
                 </form>
-          
-
         </div>
         <div class="modal-footer">
           <button type="button" id="nameBtn" class="btn btn-primary" data-dismiss="modal">Save</button>
@@ -71,7 +76,21 @@
       </div>
     </div>
   </div>
-
+  
+  <!-- Game finised modal -->
+  <div class="modal fade" id="overlay">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title pull-left"></h4>
+        </div>
+        <div class="modal-body">
+          <p id="gameResult"></p>
+        </div>
+      </div>
+    </div>
+  </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="assets/js/app.js"></script>
