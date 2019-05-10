@@ -78,12 +78,14 @@ $("#nameBtn").click(function(event){
         // database.ref("/gameData").set({
         //     player1: player1,
         //   });
-        // updateDatabase();    
+    
         database.ref("/gameData").update({
             player1: player1,
             p1wins: p1wins,
             p1losses: p1losses,
-            p1draws : p1draws
+            p1draws : p1draws,
+            // p1ready : p1ready,
+            // p2ready : p2ready
         });
         sessionPlayer = "player 1";
         console.log(" you are player 1");
@@ -103,10 +105,9 @@ $("#nameBtn").click(function(event){
         });
         sessionPlayer = "player 2";
         console.log(" you are player 2");
-        // updateDatabase();
+
     }
     else {
-        // $('#nameModal').modal('hide')
         console.log ("player queue full, watch game instead(?)");
     }
 
@@ -118,18 +119,20 @@ $("#nameBtn").click(function(event){
 
 function playGame(){
     playing = true;
-    $("gameMessageDiv").append("<span>Make your selection!</span>");
+    $("#gameMessageDiv").text("Make your selection!");
     //Capture clicks of rock, paper, or scissors and determine which player clicked what
     $("#rpsDiv > img").click(function(event){
         currentPick = $(this).attr("data-id");
         console.log("image clicked: " + currentPick);
         console.log("clicked by: " + sessionPlayer);
+       
         if (sessionPlayer == "player 1"){
             p1pick = currentPick;
             $(this).css("border","2px solid blue"); 
             database.ref("/gameData").update({
                 p1pick: p1pick
             });
+
         }
         if (sessionPlayer == "player 2"){
             p2pick = currentPick;
@@ -137,8 +140,9 @@ function playGame(){
             database.ref("/gameData").update({
                 p2pick: p2pick
             }); 
-        }
 
+        }
+        $("#gameMessageDiv").text(sessionPlayer+" selects: "+currentPick);
     });
 }
 
@@ -181,6 +185,8 @@ function calculateWinner(p1selected,p2selected){
 
 
 function gameRestart(){
+
+
     //reset the players pics
     p1pick = false;
     p2pick = false;
@@ -196,11 +202,42 @@ function gameRestart(){
         p2losses : p2losses,
         p1draws : p1draws,
         p2draws : p2draws,
+        // p1pick : p1pick,  //these 2 vars need to not exist (or database creates an infinite loop)
+        // p2pick : p2pick
         // p1ready=false, // ready to play again?
         // p2ready=false,
         
     });
-    console.log("Updating database to restart game")
+        //reset the selected square's outline
+     //clear the img outlines from the last game
+    $("#gameMessageDiv").text("restarting");
+    $('#readyModal').modal()
+    $('#readyBtn').click(function(){
+        if(sessionPlayer=="player 1") {
+            database.ref("/gameData").update({
+                p1ready : true
+            });
+            console.log('p1ready set true by' +player1);
+            console.log('other player is ready? ' +p2ready);
+            $('#readyModal').hide();
+        }
+        else if(sessionPlayer=="player 2") {
+            database.ref("/gameData").update({
+                p2ready : true
+            });
+            console.log('p2ready set true by' +player2);
+            console.log('other player is ready? ' + p1ready);
+            $('#readyModal').hide();
+        }
+        console.log ("p1r3eady: " +p1ready + "p2ready: "+p2ready);
+        if(p1ready && p2ready){
+            $("img").css("border","none");
+            console.log("BOTH PLAYERS READY TO RESTART")
+            console.log("Updating database to restart game");
+            playGame();
+        }
+    });
+    
 }
 
 //Update the game state from the database
@@ -208,7 +245,12 @@ function gameRestart(){
 database.ref("/gameData").on("value", function(snapshot)  {
     // storing the snapshot.val() in a variable for convenience
      var sv = snapshot.val();
-
+    if(snapshot.child("p1ready").exists()){
+        p1ready = sv.p1ready;
+    }
+    if(snapshot.child("p2ready").exists()){
+        p1ready = sv.p1ready;
+    }
     // Check to see db works
     // console.log(sv.player1);
     // console.log(sv.player2);
@@ -254,6 +296,7 @@ database.ref("/gameData").on("value", function(snapshot)  {
         $("#player2Div").text(player2);
         $("#player1Div").text(player1);
         playing = true;
+  
         playGame();  //sets up clickhandler so players can select their weapon (r,p,or s)
     }
 
@@ -328,9 +371,9 @@ database.ref("/gameData").on("value", function(snapshot)  {
     }
 
     // Handle the errors
-  }, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
-  });
+}, function(errorObject) {
+console.log("Errors handled: " + errorObject.code);
+});
 
 
 

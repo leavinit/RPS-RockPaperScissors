@@ -28,14 +28,14 @@
       </div>
     <div class="row">
         <div class="col-sm-2"></div>
-        <div class="col-sm-8 d-flex justify-content-between align-items-center" id="rpsDiv">
+        <div class="col-sm-8 d-flex justify-content-around align-items-center" id="rpsDiv">
             <img id ="rockPic" src="assets/images/rock.jpg" alt="rock" data-id="rock">
             <img id="paperPic" src="assets/images/paper.png" alt="paper" data-id="paper">
             <img id="scissorsPic" src="assets/images/scissors.png" alt="scissors" data-id="scissors">
         </div>
         <div class="col-sm-2"></div>
     </div>
-    <div class="row" id="infoDiv" class="d-flex justify-content-between">
+    <div class="row" id="infoDiv" class="d-flex justify-content-around">
         <div class="col-sm-2" id="gameMessageDiv"></div>
         <div class="col-sm-4 rounded"id="player1Div"></div>
         <div class="col-sm-4 rounded" id="player2Div"></div>
@@ -95,5 +95,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="assets/js/app.js"></script>
     
+
+
+  <!-- Modal -->
+<div class="modal fade" id="readyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Play Again?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button id="notReadyBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+        <button id="readyBtn" type="button" class="btn btn-primary">Ready</button>
+      </div>
+    </div>
+  </div>
+</div>  
 </body>
 </html>
